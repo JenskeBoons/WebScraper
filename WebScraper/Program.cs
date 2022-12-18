@@ -1,14 +1,6 @@
-﻿using System;
-using System.Diagnostics.Metrics;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Threading.Channels;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
-using System.Reflection.Metadata;
-using System.Data;
 
 namespace WebScraper
 {
@@ -18,11 +10,13 @@ namespace WebScraper
         {
             Console.Write("choose:");
             var choose = Console.ReadLine();
+
+            var csv = new StringBuilder();
+            var json = new StringBuilder();
+            json.AppendLine("[");
+
             if (choose == "yt")
             {
-                var csv = new StringBuilder();
-                var json = new StringBuilder();
-                
                 Console.Write("input:");
                 var input = Console.ReadLine();
                 IWebDriver driver = new ChromeDriver();
@@ -33,7 +27,6 @@ namespace WebScraper
                 var date = driver.FindElements(By.XPath("//*[@id=\"metadata-line\"]/span[2]"));
                 var channel = driver.FindElements(By.XPath("//*[@id=\"channel-info\"]")); 
 
-                json.AppendLine("[");
                 csv.AppendLine("channel" + "\";\"" + "title" + "\";\"" + "views" + "\";\"" + "date" + "\";\"" + "link");
 
                 var count = 0;
@@ -65,16 +58,11 @@ namespace WebScraper
 
                     count++;
                 }
-                json.AppendLine("]");
-                File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.csv", csv.ToString());
-                File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.json", json.ToString());
-                //driver.Quit();
+
+                driver.Quit();
             }
             else if (choose == "job")
             {
-                var csv = new StringBuilder();
-                var json = new StringBuilder();
-
                 Console.Write("input:");
                 var input = Console.ReadLine();
                 IWebDriver driver = new ChromeDriver();
@@ -92,7 +80,6 @@ namespace WebScraper
                 var keywords = "keywords";
                 var link = "link";
 
-                json.AppendLine("[");
                 csv.AppendLine(title + "\";\"" + company + "\";\"" + location + "\";\"" + keywords + "\";\"" + link);
 
                 var count = 0;
@@ -108,6 +95,7 @@ namespace WebScraper
                     location = driver.FindElement(By.XPath("/html/body/section/div[1]/div/div[2]/div/div/form/div[2]/div/div/div[2]/section/div/div[2]/div[1]/div/ul/li[" + count + "]/span[2]/span[2]/span[2]/span/span")).Text;
                     keywords = driver.FindElement(By.XPath("/html/body/section/div[1]/div/div[2]/div/div/form/div[2]/div/div/div[2]/section/div/div[2]/div[1]/div/ul/li[" + count + "]/span[2]/span[3]")).Text;
                     link = driver.FindElement(By.XPath("html/body/section/div[1]/div/div[2]/div/div/form/div[2]/div/div/div[2]/section/div/div[2]/div[1]/div/ul/li[" + count + "]/span[2]/a")).GetAttribute("href");
+                    
                     Console.WriteLine(title);
                     Console.WriteLine(company);
                     Console.WriteLine(location);
@@ -131,17 +119,12 @@ namespace WebScraper
                     }
                     csv.AppendLine(title + "\";\"" + company + "\";\"" + location + "\";\"" + keywords + "\";\"" + link);
                 }
-                json.AppendLine("]");
-                File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.csv", csv.ToString());
-                File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.json", json.ToString());
 
+                driver.Quit();
             }
 
             else if (choose == "news")
             {
-                var csv = new StringBuilder();
-                var json = new StringBuilder();
-
                 Console.Write("input:");
                 var input = Console.ReadLine();
                 IWebDriver driver = new ChromeDriver();
@@ -157,7 +140,6 @@ namespace WebScraper
                 var date = "date";
 
                 csv.AppendLine(paper + "\";\"" + artickle + "\";\"" + date + "\";\"" + link);
-                json.AppendLine("[");
 
                 var count = 1;
                 while (count < 6)
@@ -188,11 +170,12 @@ namespace WebScraper
                     }
                     csv.AppendLine(paper + "\";\"" + artickle + "\";\"" + date + "\";\"" + link); 
                 }
-                json.AppendLine("]");
-                File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.json", json.ToString());
-                File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.csv", csv.ToString());
-                //driver.Quit();
+
+                driver.Quit();
             }
+            json.AppendLine("]");
+            File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.json", json.ToString());
+            File.WriteAllText("C:\\Users\\JensB\\OneDrive\\Documenten\\School\\thomasmore\\2ITF\\DevOps\\WebScraper\\test.csv", csv.ToString());
         }
     }
 }
